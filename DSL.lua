@@ -1,4 +1,4 @@
--- Development Assistance Module 0.1.0 / Coded by Devollin / Started 12.19.18
+-- Development Support Library 0.1.0 / Coded by Devollin / Started 12.19.18
 
 -- Synthesize 1.0.0 / Edited 12.19.18
 local function Synthesize(Obj, Data)
