@@ -1,10 +1,18 @@
---// Development Support Library 0.1.0 / Coded by Devollin / Started 12.19.18
+--// Development Support Library 0.3.0 / Coded by Devollin / Started 12.19.18
 
 local DSL = {}
+local TS = game:GetService('TweenService')
 
---// Synth 1.1.0 / Edited 2.22.19
-function DSL.Synth(Obj, Properties)
-	assert(Obj and Properties, 'No parameters were filled!')
+--// Setup
+
+for Index, Child in pairs(script:GetChildren()) do
+	for FuncName, Func in pairs(require(Child)) do
+		DSL[FuncName] = Func
+	end
+end
+
+--// Synth 1.2.0 / Edited 2.10.20
+function Recursive(Obj, Properties)
 	local Parent, Children = Properties.Parent or nil, Properties.Children or {}
 	Properties.Parent, Properties.Children = nil, nil
 	Obj = (typeof(Obj) == 'Instance' and Obj) or Instance.new(Obj)
@@ -16,8 +24,114 @@ function DSL.Synth(Obj, Properties)
 		Child[2].Parent = Obj
 		DSL.Synth(Child[1], Child[2])
 	end
-	Obj.Parent = Parent or Obj.Parent
+	if Obj.Parent ~= game then
+		Obj.Parent = Parent or Obj.Parent
+	end
 	return Obj
+end
+
+function DSL.Synth(Obj, Properties)
+	assert(Obj and Properties, 'No parameters were filled!')
+	if typeof(Obj) == 'table' then
+		local Objects = {}
+		for Index, Ob in pairs(Obj) do
+			Recursive(Ob, Properties)
+		end
+		return Objects
+	else
+		Recursive(Obj, Properties)
+	end
+end
+
+--// Weld 1.0.0 / Edited 2.1.20
+function DSL.Weld(Model, CorePart, Ignore)
+	function Recursive(Collection)
+		for Ind, Child in pairs(Collection:GetChildren()) do
+			if Child ~= Ignore and Child ~= CorePart then
+				if Child:IsA("BasePart") then
+					DSL.Synth({Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
+					Child.Anchored = false
+				elseif (Child:IsA("Folder") or Child:IsA("Model")) then
+					Recursive(Child)
+				end
+			end
+		end
+	end
+	Recursive(Model)
+end
+
+local T = {}
+T.__index = T
+
+function T.new(Data)
+	return setmetatable({Data = Data, Completed = Data[1].Completed}, T)
+end
+function T:Cancel()
+	for Index, TN in pairs(self.Data) do TN:Cancel() end
+end
+function T:Pause() 
+	for Index, TN in pairs(self.Data) do TN:Pause() end
+end
+function T:Play()
+	for Index, TN in pairs(self.Data) do TN:Play() end
+end
+
+local Info = {
+	['Instance'] = function(Object, Properties, Data)
+		return TS:Create(Object, TweenInfo.new(Data.T, Data.ES, Data.ED, Data.RC, Data.R, Data.DT), Properties)
+	end,
+	['table'] = function(Objects, Properties, Data)
+		local Tweens = {}
+		for Index, Object in pairs(Objects) do
+			table.insert(Tweens, 1, TS:Create(Object, TweenInfo.new(Data.T, Data.ES, Data.ED, Data.RC, Data.R, Data.DT), Properties))
+		end
+		return T.new(Tweens)
+	end,
+	[true] = function(Tween) Tween:Play() end,
+	[false] = function(Tween) Tween:Cancel() end
+}
+
+--// Tween 1.0.0 / Edited 9.2.19
+function DSL.Tween(Object, Properties, Data)
+	assert(Object and Properties and typeof(Properties) == "table", "Insufficient values, cancelling Tween!")
+	local Data, Tween = Data or {}, nil
+	Data.T = Data.T or .25 -- Time
+	Data.ES = Data.ES or Enum.EasingStyle.Quart -- EasingStyle
+	Data.ED = Data.ED or Enum.EasingDirection.Out -- EasingDirection
+	Data.RC = Data.RC or 0 -- RepeatCount
+	Data.R = Data.R or false -- Repeat
+	Data.DT = Data.DT or 0 -- DelayTime
+	Data.AP = Data.AP or true -- AutoPlay
+	Data.CB = Data.CB or false -- Callback
+	local Set = Info[typeof(Object)](Object, Properties, Data)
+	Info[Data.AP](Set)
+	return Set
+end
+
+--// Magnitude 1.0.0 / Edited 8.31.19
+function DSL.Magnitude(Start, End)
+	return math.sqrt((End.X - Start.X) ^ 2 + (End.Y - Start.Y) ^ 2 + (End.Z - Start.Z) ^ 2)
+end
+
+--// Round 1.0.0 / Edited 9.22.19
+function DSL.Round(Num)
+	return math.ceil(Num - 0.5)
+end
+
+--// AdvRound 1.0.0 / Edited 9.22.19
+function DSL.AdvRound(Num, Place)
+	local Adjust = 10 ^ (Place or 0)
+	return math.ceil((Num * Adjust) - 0.5)
+end
+
+--// Center 1.0.0 / Edited 2.10.20
+function DSL.Center(Gui, Mouse)
+	return Vector2.new(Mouse.X - (Gui.AbsoluteSize.X / 2), Mouse.Y - (Gui.AbsoluteSize.Y / 2))
+end
+
+--// Pyth 1.0.0 / Edited 2.10.20
+function DSL.Pyth(A, B)
+	return math.sqrt((A ^ 2) + (B ^ 2))
 end
 
 return DSL
