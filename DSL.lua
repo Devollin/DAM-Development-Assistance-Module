@@ -39,7 +39,7 @@ function DSL.Synth(Obj, Properties)
 		end
 		return Objects
 	else
-		Recursive(Obj, Properties)
+		return Recursive(Obj, Properties)
 	end
 end
 
