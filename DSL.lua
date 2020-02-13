@@ -43,7 +43,7 @@ function DSL.Synth(Obj, Properties)
 	end
 end
 
---// Weld 1.0.0 / Edited 2.1.20
+--// Weld 1.0.1 / Edited 2.1.20
 function DSL.Weld(Model, CorePart, Ignore)
 	function Recursive(Collection)
 		for Ind, Child in pairs(Collection:GetChildren()) do
@@ -60,8 +60,13 @@ function DSL.Weld(Model, CorePart, Ignore)
 	Recursive(Model)
 end
 
+--// Tween 1.1.0 / Edited 2.13.20
 local T = {}
 T.__index = T
+
+local function Pure(Obj, Prop, Dat)
+	return TS:Create(Obj, TweenInfo.new(Dat.T, Dat.ES, Dat.ED, Dat.RC, Dat.R, Dat.DT), Prop)
+end
 
 function T.new(Data)
 	return setmetatable({Data = Data, Completed = Data[1].Completed}, T)
@@ -78,12 +83,12 @@ end
 
 local Info = {
 	['Instance'] = function(Object, Properties, Data)
-		return TS:Create(Object, TweenInfo.new(Data.T, Data.ES, Data.ED, Data.RC, Data.R, Data.DT), Properties)
+		return Pure(Object, Properties, Data)
 	end,
 	['table'] = function(Objects, Properties, Data)
 		local Tweens = {}
 		for Index, Object in pairs(Objects) do
-			table.insert(Tweens, 1, TS:Create(Object, TweenInfo.new(Data.T, Data.ES, Data.ED, Data.RC, Data.R, Data.DT), Properties))
+			table.insert(Tweens, 1, Pure(Object, Properties, Data))
 		end
 		return T.new(Tweens)
 	end,
@@ -91,21 +96,26 @@ local Info = {
 	[false] = function(Tween) Tween:Cancel() end
 }
 
---// Tween 1.0.0 / Edited 9.2.19
 function DSL.Tween(Object, Properties, Data)
-	assert(Object and Properties and typeof(Properties) == "table", "Insufficient values, cancelling Tween!")
-	local Data, Tween = Data or {}, nil
-	Data.T = Data.T or .25 -- Time
-	Data.ES = Data.ES or Enum.EasingStyle.Quart -- EasingStyle
-	Data.ED = Data.ED or Enum.EasingDirection.Out -- EasingDirection
-	Data.RC = Data.RC or 0 -- RepeatCount
-	Data.R = Data.R or false -- Repeat
-	Data.DT = Data.DT or 0 -- DelayTime
-	Data.AP = Data.AP or true -- AutoPlay
-	Data.CB = Data.CB or false -- Callback
-	local Set = Info[typeof(Object)](Object, Properties, Data)
-	Info[Data.AP](Set)
-	return Set
+	 local Success, Ret = pcall(function()
+		assert(Object and Properties and typeof(Properties) == "table", "Insufficient values, cancelling Tween!")
+		local Data, Tween = Data or {}, nil
+		Data.T = Data.T or .25 -- Time
+		Data.ES = Enum.EasingStyle[Data.ES] or Enum.EasingStyle.Quart -- EasingStyle
+		Data.ED = Enum.EasingDirection[Data.ED] or Enum.EasingDirection.Out -- EasingDirection
+		Data.RC = Data.RC or 0 -- RepeatCount
+		Data.R = Data.R or false -- Repeat
+		Data.DT = Data.DT or 0 -- DelayTime
+		Data.AP = Data.AP or true -- AutoPlay
+		Data.CB = Data.CB or false -- Callback
+		local Set = Info[typeof(Object)](Object, Properties, Data)
+		Info[Data.AP](Set)
+		return Set
+	end
+	if Success then
+		return Ret
+	end
+	warn('Tween failed:'..Ret)
 end
 
 --// Magnitude 1.0.0 / Edited 8.31.19
