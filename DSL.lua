@@ -60,7 +60,7 @@ function DSL.Weld(Model, CorePart, Ignore)
 	Recursive(Model)
 end
 
---// Tween 1.1.1 / Edited 2.13.20
+--// Tween 1.1.2 / Edited 2.13.20
 local T = {}
 T.__index = T
 
@@ -101,8 +101,8 @@ function DSL.Tween(Object, Properties, Data)
 		assert(Object and Properties and typeof(Properties) == "table", "Insufficient values, cancelling Tween!")
 		local Data, Tween = Data or {}, nil
 		Data.T = Data.T or .25 -- Time
-		Data.ES = Enum.EasingStyle[Data.ES] or Enum.EasingStyle.Quart -- EasingStyle
-		Data.ED = Enum.EasingDirection[Data.ED] or Enum.EasingDirection.Out -- EasingDirection
+		Data.ES = Data.ES and Enum.EasingStyle[Data.ES] or Enum.EasingStyle.Quart -- EasingStyle
+		Data.ED = Data.ED and Enum.EasingDirection[Data.ED] or Enum.EasingDirection.Out -- EasingDirection
 		Data.RC = Data.RC or 0 -- RepeatCount
 		Data.R = Data.R or false -- Repeat
 		Data.DT = Data.DT or 0 -- DelayTime
