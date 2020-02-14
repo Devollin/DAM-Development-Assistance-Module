@@ -60,7 +60,7 @@ function DSL.Weld(Model, CorePart, Ignore)
 	Recursive(Model)
 end
 
---// Tween 1.1.0 / Edited 2.13.20
+--// Tween 1.1.1 / Edited 2.13.20
 local T = {}
 T.__index = T
 
@@ -111,7 +111,7 @@ function DSL.Tween(Object, Properties, Data)
 		local Set = Info[typeof(Object)](Object, Properties, Data)
 		Info[Data.AP](Set)
 		return Set
-	end
+	end)
 	if Success then
 		return Ret
 	end
