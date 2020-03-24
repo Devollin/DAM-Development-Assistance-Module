@@ -43,12 +43,12 @@ function DSL.Synth(Obj, Properties)
 	end
 end
 
---// Weld 1.0.2 / Edited 3.24.20
+--// Weld 1.0.3 / Edited 3.24.20
 function DSL.Weld(Model, CorePart, Ignore)
 	for Ind, Child in pairs(Model:GetDescendants()) do
 		if Child ~= Ignore and Child ~= CorePart then
 			if Child:IsA("BasePart") then
-				DSL.Synth({Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
+				DSL.Synth('WeldConstraint', {Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
 				Child.Anchored = false
 			end
 		end
