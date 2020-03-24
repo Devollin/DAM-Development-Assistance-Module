@@ -43,19 +43,16 @@ function DSL.Synth(Obj, Properties)
 	end
 end
 
---// Weld 1.0.1 / Edited 2.1.20
+--// Weld 1.0.2 / Edited 3.24.20
 function DSL.Weld(Model, CorePart, Ignore)
-	function Recursive(Collection)
-		for Ind, Child in pairs(Collection:GetDescendants()) do
-			if Child ~= Ignore and Child ~= CorePart then
-				if Child:IsA("BasePart") then
-					DSL.Synth({Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
-					Child.Anchored = false
-				end
+	for Ind, Child in pairs(Model:GetDescendants()) do
+		if Child ~= Ignore and Child ~= CorePart then
+			if Child:IsA("BasePart") then
+				DSL.Synth({Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
+				Child.Anchored = false
 			end
 		end
 	end
-	Recursive(Model)
 end
 
 --// Tween 1.1.2 / Edited 2.13.20
