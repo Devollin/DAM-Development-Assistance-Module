@@ -1,4 +1,4 @@
---// Development Support Library 0.4.0 / Coded by Devollin / Started 12.19.18
+--// Development Support Library 0.5.0 / Coded by Devollin / Started 12.19.18
 
 local DSL = {}
 local TS = game:GetService('TweenService')
@@ -139,15 +139,25 @@ function DSL.Pythagorean(A, B)
 	return math.sqrt((A ^ 2) + (B ^ 2))
 end
 
---// Shorthand 1.0.0 / Edited 5.29.20 / By Algoritimi
+--// Shorthand 1.0.1 / Edited 5.29.20 / By Algoritimi
 function DSL.Shorthand(Number)
 	local Index = math.floor(math.log10(Number) / 3)
 	local Shorthand = {
+		[0] = '',
 		[1] = "k",
 		[2] = "m",
 		[3] = "b"
 	}
 	return tostring(Number / (1000 ^ Index)) .. Shorthand[Index]
+end
+
+--// GetLengthOfDictionary 1.0.0 / Edited 5.29.20
+function DSL.GetLengthOfDictionary(Dictionary)
+	local Length = 0
+	for Index, Item in pairs(Dictionary) do
+		Length = Length + 1
+	end
+	return Length
 end
 
 return DSL
