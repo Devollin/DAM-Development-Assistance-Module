@@ -1,4 +1,4 @@
---// Development Support Library 0.3.0 / Coded by Devollin / Started 12.19.18
+--// Development Support Library 0.4.0 / Coded by Devollin / Started 12.19.18
 
 local DSL = {}
 local TS = game:GetService('TweenService')
@@ -43,16 +43,21 @@ function DSL.Synth(Obj, Properties)
 	end
 end
 
---// Weld 1.0.3 / Edited 3.24.20
+--// Weld 1.0.1 / Edited 2.1.20
 function DSL.Weld(Model, CorePart, Ignore)
-	for Ind, Child in pairs(Model:GetDescendants()) do
-		if Child ~= Ignore and Child ~= CorePart then
-			if Child:IsA("BasePart") then
-				DSL.Synth('WeldConstraint', {Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
-				Child.Anchored = false
+	function Recursive(Collection)
+		for Ind, Child in pairs(Collection:GetChildren()) do
+			if Child ~= Ignore and Child ~= CorePart then
+				if Child:IsA("BasePart") then
+					DSL.Synth({Part0 = CorePart, Part1 = Child, Name = Child.Name, Parent = CorePart})
+					Child.Anchored = false
+				elseif (Child:IsA("Folder") or Child:IsA("Model")) then
+					Recursive(Child)
+				end
 			end
 		end
 	end
+	Recursive(Model)
 end
 
 --// Tween 1.1.2 / Edited 2.13.20
@@ -118,15 +123,15 @@ function DSL.Magnitude(Start, End)
 	return math.sqrt((End.X - Start.X) ^ 2 + (End.Y - Start.Y) ^ 2 + (End.Z - Start.Z) ^ 2)
 end
 
---// Round 1.0.0 / Edited 9.22.19
-function DSL.Round(Num)
-	return math.ceil(Num - 0.5)
+--// Round 1.0.1 / Edited 5.29.20
+function DSL.Round(Number)
+	return math.ceil(Number - 0.5)
 end
 
---// AdvRound 1.0.0 / Edited 9.22.19
-function DSL.AdvRound(Num, Place)
+--// PrecisionRound 1.0.1 / Edited 5.29.20
+function DSL.PrecisionRound(Number, Place)
 	local Adjust = 10 ^ (Place or 0)
-	return math.ceil((Num * Adjust) - 0.5)
+	return math.ceil((Number * Adjust) - 0.5)
 end
 
 --// Center 1.0.0 / Edited 2.10.20
@@ -134,9 +139,20 @@ function DSL.Center(Gui, Mouse)
 	return Vector2.new(Mouse.X - (Gui.AbsoluteSize.X / 2), Mouse.Y - (Gui.AbsoluteSize.Y / 2))
 end
 
---// Pyth 1.0.0 / Edited 2.10.20
-function DSL.Pyth(A, B)
+--// Pythagorean 1.0.1 / Edited 5.29.20
+function DSL.Pythagorean(A, B)
 	return math.sqrt((A ^ 2) + (B ^ 2))
+end
+
+--// Shorthand 1.0.0 / Edited 5.29.20 / By Algoritimi
+function DSL.Shorthand(Number)
+	local Index = math.floor(math.log10(Number) / 3)
+	local Shorthand = {
+		[1] = "k",
+		[2] = "m",
+		[3] = "b"
+	}
+	return tostring(Number / (1000 ^ Index)) .. Shorthand[Index]
 end
 
 return DSL
