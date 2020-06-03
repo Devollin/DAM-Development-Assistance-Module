@@ -118,15 +118,10 @@ function DSL.Magnitude(Start, End)
 	return math.sqrt((End.X - Start.X) ^ 2 + (End.Y - Start.Y) ^ 2 + (End.Z - Start.Z) ^ 2)
 end
 
---// Round 1.0.1 / Edited 5.29.20
-function DSL.Round(Number)
-	return math.ceil(Number - 0.5)
-end
-
---// PrecisionRound 1.0.1 / Edited 5.29.20
-function DSL.PrecisionRound(Number, Place)
+--// Round 1.0.2 / Edited 6.3.20
+function DSL.Round(Number, Place)
 	local Adjust = 10 ^ (Place or 0)
-	return math.ceil((Number * Adjust) - 0.5)
+	return math.ceil((Number * Adjust) - 0.5) / Adjust
 end
 
 --// Center 1.0.0 / Edited 2.10.20
