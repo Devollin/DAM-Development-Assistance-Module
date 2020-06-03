@@ -134,16 +134,18 @@ function DSL.Pythagorean(A, B)
 	return math.sqrt((A ^ 2) + (B ^ 2))
 end
 
---// Shorthand 1.0.1 / Edited 5.29.20 / By Algoritimi
+--// Shorthand 1.0.3 / Edited 6.3.20 / By Algoritimi
 function DSL.Shorthand(Number)
-	local Index = math.floor(math.log10(Number) / 3)
+	local Index = math.clamp(math.floor(math.log10(Number) / 3), 0, 4)
 	local Shorthand = {
 		[0] = '',
 		[1] = "k",
 		[2] = "m",
-		[3] = "b"
+		[3] = "b",
+		[4] = 't'
 	}
-	return tostring(Number / (1000 ^ Index)) .. Shorthand[Index]
+	local Place = Index == 0 and 0 or 1
+	return Shorthand[Index] and tostring(DSL.Round(Number / (1000 ^ Index), Place)) .. Shorthand[Index] or Number
 end
 
 --// GetLengthOfDictionary 1.0.0 / Edited 5.29.20
