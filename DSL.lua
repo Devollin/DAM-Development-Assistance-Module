@@ -1,15 +1,7 @@
---// Development Support Library 0.5.0 / Coded by Devollin / Started 12.19.18
+--// Development Support Library 0.5.1 / Coded by Devollin / Started 12.19.18
 
 local DSL = {}
 local TS = game:GetService('TweenService')
-
---// Setup
-
-for Index, Child in pairs(script:GetChildren()) do
-	for FuncName, Func in pairs(require(Child)) do
-		DSL[FuncName] = Func
-	end
-end
 
 --// Synth 1.2.0 / Edited 2.10.20
 function Recursive(Obj, Properties)
@@ -155,6 +147,19 @@ function DSL.GetLengthOfDictionary(Dictionary)
 		Length = Length + 1
 	end
 	return Length
+end
+
+
+--// Setup
+for Index, Child in pairs(script:GetChildren()) do
+	local Required = require(Child)
+	if typeof(Required) == 'table' then
+		for FuncName, Func in pairs(Required) do
+			DSL[FuncName] = Func
+		end
+	elseif typeof(Required) == 'function' then
+		DSL[Child.Name] = Required
+	end
 end
 
 return DSL
