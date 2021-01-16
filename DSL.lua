@@ -2,7 +2,7 @@
 --// Development Support Library 0.6.0 / Coded by Devollin / Started 12.19.18
 local DSL = {}
 
---// Synth 1.4.1 / Edited 1.15.21
+--// Synth 1.4.3 / Edited 1.15.21
 function recursive(object: any, properties: any, modifiers: any)
 	local final = (typeof(object) == "Instance" and object) or Instance.new(object)
 	for name, property in pairs(properties) do
@@ -11,11 +11,19 @@ function recursive(object: any, properties: any, modifiers: any)
 		end
 	end
 	for class, data in pairs(modifiers.children) do
-		if not final:FindFirstChild(class) then
-			data.properties.Name = class
-		end
 		data.properties.Parent = final
-		DSL.Synth(class, data.properties, data.modifiers)
+		if typeof(class) == "Instance" or typeof(class) == "table" then
+			DSL.Synth(class, data.properties, data.modifiers)
+		elseif typeof(class) == "string" then
+			if final:FindFirstChild(class) then
+				DSL.Synth(final:FindFirstChild(class), data.properties, data.modifiers)
+			else
+				data.properties.Name = class
+				DSL.Synth(class, data.properties, data.modifiers)
+			end
+		else
+			error("Invalid setup!" .. debug.traceback())
+		end
 	end
 	for name, event in pairs(modifiers.callbacks) do
 		final[name]:Connect(function(...)
@@ -33,9 +41,23 @@ function DSL.Synth(class: any, properties: any, modifiers: any)
 	assert(properties, "No properties were provided!", debug.traceback())
 	if typeof(properties) == "table" then
 		modifiers = modifiers or {callbacks = {}, children = {}}
-		return recursive(class, properties, modifiers)
+		if typeof(class) == "table" then
+			local instances = {}
+			for _, new in pairs(class) do
+				if typeof(new) == "Instance" or typeof(class) == "string" then
+					table.insert(instances, recursive(new, properties, modifiers))
+				else
+					error("Invalid setup!" .. debug.traceback())
+				end
+			end
+			return instances
+		elseif typeof(class) == "Instance" or typeof(class) == "string" then
+			return recursive(class, properties, modifiers)
+		else
+			error("Invalid setup!" .. debug.traceback())
+		end
 	else
-		error("Invalid setup!")
+		error("Invalid setup!" .. debug.traceback())
 	end
 end
 
