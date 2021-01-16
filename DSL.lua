@@ -2,7 +2,7 @@
 --// Development Support Library 0.6.0 / Coded by Devollin / Started 12.19.18
 local DSL = {}
 
---// Synth 1.4.0 / Edited 1.11.21
+--// Synth 1.4.1 / Edited 1.15.21
 function recursive(object: any, properties: any, modifiers: any)
 	local final = (typeof(object) == "Instance" and object) or Instance.new(object)
 	for name, property in pairs(properties) do
@@ -28,10 +28,10 @@ function recursive(object: any, properties: any, modifiers: any)
 	return final
 end
 
-function DSL.Synth(class: string, properties: any, modifiers: any)
+function DSL.Synth(class: any, properties: any, modifiers: any)
 	assert(class, "No parameters were filled!", debug.traceback())
 	assert(properties, "No properties were provided!", debug.traceback())
-	if typeof(class) == "string" and typeof(properties) == "table" then
+	if typeof(properties) == "table" then
 		modifiers = modifiers or {callbacks = {}, children = {}}
 		return recursive(class, properties, modifiers)
 	else
