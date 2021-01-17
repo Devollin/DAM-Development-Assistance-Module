@@ -1,5 +1,5 @@
 --!strict
---// Development Support Library 0.6.0 / Coded by Devollin / Started 12.19.18
+--// Development Support Library 0.6.1 / Coded by Devollin / Started 12.19.18
 local DSL = {}
 
 --// Synth 1.4.3 / Edited 1.15.21
@@ -158,6 +158,23 @@ function DSL.TableMerge(a: any, b: any)
 		end
 	end
 	return c
+end
+
+--// GetDisplayTime 1.0.0 / Edited  1.17.21
+function DSL.GetDisplayTime(duration: number, inHours: any)
+	duration = math.ceil(duration - 0.5)
+	local seconds = duration % 60
+	if inHours then
+		local minutes = ((duration - seconds) / 60) % 60
+		return 
+			tostring(((duration - (minutes * 60) - seconds) / 60) / 60) .. 
+			':' .. tostring((minutes < 10) and ('0'..tostring(minutes)) or minutes) .. 
+			':' .. tostring((seconds < 10) and ('0'..tostring(seconds)) or seconds)
+	else
+		return 
+			tostring((duration - seconds) / 60) .. 
+			':' .. tostring((seconds < 10) and ('0'..tostring(seconds)) or seconds)
+	end
 end
 
 
