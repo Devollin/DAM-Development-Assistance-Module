@@ -2,7 +2,7 @@
 --// Development Support Library 0.6.1 / Coded by Devollin / Started 12.19.18
 local DSL = {}
 
---// Synth 1.4.3 / Edited 1.15.21
+--// Synth 1.4.4 / Edited 1.18.21
 function recursive(object: any, properties: any, modifiers: any)
 	local final = (typeof(object) == "Instance" and object) or Instance.new(object)
 	for name, property in pairs(properties) do
