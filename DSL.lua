@@ -30,7 +30,7 @@ function recursive(object: any, properties: any, modifiers: any)
 			event(final, ...)
 		end)
 	end
-	if final.Parent and final.Parent ~= game then
+	if final.Parent ~= game and properties.Parent then
 		final.Parent = properties.Parent or final.Parent
 	end
 	return final
