@@ -2,7 +2,7 @@
 --// Development Support Library 0.6.1 / Coded by Devollin / Started 12.19.18
 local DSL = {}
 
---// Synth 1.4.4 / Edited 1.18.21
+--// Synth 1.4.5 / Edited 1.20.21
 function recursive(object: any, properties: any, modifiers: any)
 	local final = (typeof(object) == "Instance" and object) or Instance.new(object)
 	for name, property in pairs(properties) do
@@ -10,7 +10,7 @@ function recursive(object: any, properties: any, modifiers: any)
 			final[name] = property
 		end
 	end
-	for class, data in pairs(modifiers.children) do
+	for class, data in pairs(modifiers.children or {}) do
 		data.properties.Parent = final
 		if typeof(class) == "Instance" or typeof(class) == "table" then
 			DSL.Synth(class, data.properties, data.modifiers)
@@ -25,7 +25,7 @@ function recursive(object: any, properties: any, modifiers: any)
 			error("Invalid setup!" .. debug.traceback())
 		end
 	end
-	for name, event in pairs(modifiers.callbacks) do
+	for name, event in pairs(modifiers.callbacks or {}) do
 		final[name]:Connect(function(...)
 			event(final, ...)
 		end)
