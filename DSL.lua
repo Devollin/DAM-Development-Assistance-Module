@@ -177,14 +177,27 @@ function DSL.GetDisplayTime(duration: number, inHours: any)
 	end
 end
 
---// GetDisplayNumber 1.0.3 / Edited 1.26.21
+--// GetDisplayNumber 1.1.0 / Edited 1.30.21
 function DSL.GetDisplayNumber(number: number)
-	local stringLength = string.len(tostring(number))
 	local list = {}
-	for index = 1, ((stringLength - (stringLength % 3)) / 3) + (((stringLength % 3) ~= 0) and 1 or 0) do
-		table.insert(list, 1, string.sub(tostring(number), stringLength - (3 * index) + 1, stringLength - (3 * (index - 1))) .. ((index == 1) and "" or ","))
+	local final = ""
+	local adjustNum = number
+	if string.len(tostring(adjustNum)) > 3 then
+		repeat
+			adjustNum = adjustNum / 1000
+			table.insert(list, 1, string.format("%03i", (adjustNum % 1) * 1000))
+			adjustNum = adjustNum - (adjustNum % 1)
+		until adjustNum < 1000
+		if adjustNum ~= 0 then
+			adjustNum = adjustNum / 1000
+			table.insert(list, 1, tostring((adjustNum % 1) * 1000))
+			adjustNum = adjustNum - (adjustNum % 1)
+		end
+		final = table.concat(list, ",")
+	else
+		final = tostring(number)
 	end
-	return table.concat(list)
+	return final
 end
 
 
