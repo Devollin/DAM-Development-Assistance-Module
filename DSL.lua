@@ -160,20 +160,20 @@ function DSL.TableMerge(a: any, b: any)
 	return c
 end
 
---// GetDisplayTime 1.0.0 / Edited  1.17.21
+--// GetDisplayTime 1.0.1 / Edited 6.10.21
 function DSL.GetDisplayTime(duration: number, inHours: any)
 	duration = math.ceil(duration - 0.5)
 	local seconds = duration % 60
 	if inHours then
 		local minutes = ((duration - seconds) / 60) % 60
 		return 
-			tostring(((duration - (minutes * 60) - seconds) / 60) / 60) .. 
-			':' .. tostring((minutes < 10) and ('0'..tostring(minutes)) or minutes) .. 
-			':' .. tostring((seconds < 10) and ('0'..tostring(seconds)) or seconds)
+			tostring(math.abs(((duration - (minutes * 60) - seconds) / 60) / 60)) .. 
+			':' .. tostring((minutes < 10) and ('0'..tostring(math.abs(minutes))) or math.abs(minutes)) .. 
+			':' .. tostring((seconds < 10) and ('0'..tostring(math.abs(seconds))) or math.abs(seconds))
 	else
 		return 
-			tostring((duration - seconds) / 60) .. 
-			':' .. tostring((seconds < 10) and ('0'..tostring(seconds)) or seconds)
+			tostring(math.abs((duration - seconds) / 60)) .. 
+			':' .. tostring((seconds < 10) and ('0'..tostring(math.abs(seconds))) or math.abs(seconds))
 	end
 end
 
